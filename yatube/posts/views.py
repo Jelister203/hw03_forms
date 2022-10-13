@@ -1,5 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Group, User
+from django.http import HttpResponseRedirect
+from .forms import PostForm
 from django.core.paginator import Paginator
 
 
@@ -13,16 +15,12 @@ def index(request):
     }
     return render(request, 'posts/index.html', context)
 
-
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-
     post_list = group.posts.all()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
-    #posts = group.posts.all()[:10]
     context = {
         'group': group,
         'page_obj': page_obj,
@@ -45,3 +43,14 @@ def post_detail(request, post_id):
     'post': Post.objects.get(pk=post_id),
     }
     return render(request, 'posts/post_detail.html', context)
+
+def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        post = form.save(commit=False)
+        post.author = request.user
+        post.save()
+        return redirect('posts:profile', username=post.author)
+    form = PostForm()
+    context = {'form': form,}
+    return render(request, 'posts/create_post.html', context)
