@@ -22,8 +22,9 @@
       {% include 'includes/header.html' %}
     <main>
       <div class ="container py-5">
+      {% block header %}{% endblock %}
       {% block content %}
-        Контент не подвезли :(
+        Вставьте текст...
       {% endblock %}
       </div>
     </main>
