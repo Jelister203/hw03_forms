@@ -7,5 +7,8 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['text', 'group']
 
-    def is_valid(self):
+    def clean_text(self):
+        text = self.cleaned_data['text']
+        if len(text) > 100:
+            raise forms.ValidationError('Превышен предел символов')
         return True
