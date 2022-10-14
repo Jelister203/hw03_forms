@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Group, User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from .forms import PostForm
 from django.core.paginator import Paginator
 
@@ -49,8 +49,31 @@ def post_create(request):
         form = PostForm(request.POST)
         post = form.save(commit=False)
         post.author = request.user
+        request.POST.get("group", None)
         post.save()
         return redirect('posts:profile', username=post.author)
     form = PostForm()
     context = {'form': form,}
+    return render(request, 'posts/create_post.html', context)
+
+def post_edit(request, post_id):
+    is_edit=True
+    post = get_object_or_404(Post, pk=post_id)
+    if request.user != post.author:
+        return HttpResponse('Гудбай!')
+    if request.method == 'POST':
+        form=PostForm(request.POST)
+        post.text = request.POST.get("text")
+        group = request.POST.get("group")
+        if group == '':
+            post.group = None
+            post.save()
+            return redirect('posts:profile', username=post.author)
+        post.group = Group.objects.get(pk=group)
+        post.save()
+        return redirect('posts:profile', username=post.author)
+    form = PostForm()
+    form.text = post.text
+    form.group = post.group
+    context = {'is_edit': is_edit, 'form': form,}
     return render(request, 'posts/create_post.html', context)

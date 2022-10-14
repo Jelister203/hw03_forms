@@ -15,8 +15,8 @@
   </ul>
 </article>
   <p>{{ post.text }}</p>
+  <a href="{% url 'posts:post_detail' post.id %}">подробная информация </a>
   {% if not forloop.last %}<hr>{% endif %}
 {% endfor %}
-{{ content }}
 {% include 'posts/includes/paginator.html' %}
 {% endblock %}
