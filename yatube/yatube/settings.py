@@ -26,7 +26,10 @@ SECRET_KEY = '3jfc!vw0u&5l1%!vx_k@4e=v7l51)qjt&yqeelo52-y4-$ha+_'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'testserver',
 ]
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
@@ -53,7 +56,6 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'about.apps.AboutConfig',
 ]
-# anfisa/settings.py
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -141,12 +143,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+"""
 if DEBUG:
     import logging
     logging.basicConfig()
     LOGGING = {
         'version': 1,
-        'disable_existing_loggers': False,
+        'disable_existing_loggers': True,
         'formatters': {
             'verbose': {
                 'format': '{pathname}:{lineno} {levelname} {asctime} {message}',
@@ -166,3 +169,4 @@ if DEBUG:
             },
         },
     }
+"""
