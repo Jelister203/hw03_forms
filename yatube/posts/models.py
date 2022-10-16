@@ -6,7 +6,6 @@ User = get_user_model()
 
 class Group(models.Model):
     class Meta:
-        pass
         verbose_name = 'Группы'
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)

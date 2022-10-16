@@ -13,4 +13,4 @@ class PostForm(forms.ModelForm):
         text = self.cleaned_data['text']
         if len(text) > 5000:
             raise forms.ValidationError('Превышен предел символов')
-        return True
+        return text
