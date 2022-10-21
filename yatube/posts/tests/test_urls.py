@@ -1,13 +1,16 @@
-from django.test import TestCase, Client
-from django.contrib.auth import get_user_model
-from posts.models import Post, Group
+from http import HTTPStatus
 
+from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
+from posts.models import Group, Post
 
 User = get_user_model()
 
 
 class StaticURLTests(TestCase):
     def setUp(self):
+        self.OK = HTTPStatus.OK
+        self.NOT_FOUND = HTTPStatus.NOT_FOUND
         self.guest = Client()
         self.user = Client()
         self.user2 = Client()
@@ -31,7 +34,7 @@ class StaticURLTests(TestCase):
     def test_404(self):
         """Выбрасывает 404 при запросе на несуществующую страницу"""
         fake_response = self.guest.get('/unexisting_page/')
-        self.assertEqual(fake_response.status_code, 404)
+        self.assertEqual(fake_response.status_code, self.NOT_FOUND)
 
     def test_302(self):
         """Редирект гостей на вход"""
@@ -52,7 +55,7 @@ class StaticURLTests(TestCase):
             for address, template in dictionary.items():
                 with self.subTest(address=address):
                     response = user_guest.get(address)
-                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(response.status_code, self.OK)
                     self.assertTemplateUsed(response, template)
         """200 для авторизированных юзеров"""
         urls_templates_names_users = {
