@@ -34,4 +34,7 @@
           </p>
         </article>
       </div>
+        {% if user == post.author %}
+        <button class="btn btn-primary" onclick="location.href = 'edit'">Редактировать</button>
+        {% endif %}
       {% endblock %}
