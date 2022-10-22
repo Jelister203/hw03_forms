@@ -12,7 +12,7 @@ class TaskPagesTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.author = User.objects.create(username='author')
-        group = Group.objects.create(
+        cls.group = Group.objects.create(
             title='Группа',
             slug='slug',
             description='Описание группы',
@@ -21,7 +21,7 @@ class TaskPagesTests(TestCase):
             text='Пост',
             pub_date=datetime.now(),
             author=cls.author,
-            group=group,
+            group=cls.group,
         )
         Post.objects.create(
             text='Пост без группы',
@@ -36,12 +36,23 @@ class TaskPagesTests(TestCase):
     def test_correct_template(self):
         templates_pages_names = {
             reverse('posts:index'): 'posts/index.html',
-            reverse('posts:group_list'): 'posts/group_list.html',
-            reverse('posts:profile'): 'posts/profile.html',
-            reverse('posts:post_detail'): 'posts/post_detail.html',
+
+            (reverse('posts:group_list', kwargs={'slug': 'slug'})):
+                'posts/group_list.html',
+
+            (reverse('posts:profile', kwargs={'username': 'author'})):
+                'posts/profile.html',
+
+            (reverse('posts:post_detail', kwargs={'post_id': 1})): 'posts/post_detail.html',
+
+            (reverse('posts:post_edit', kwargs={'post_id': 1})): 'posts/create_post.html',
+
             reverse('posts:post_create'): 'posts/create_post.html',
-            reverse('posts:post_edit'): 'posts/create_post.html',
         }
+        for reverse_name, template in templates_pages_names.items():
+            with self.subTest(reverse_name=reverse_name):
+                response = self.auth_client.get(reverse_name)
+                self.assertTemplateUsed(response, template)
 
     def test_correct_context(self):
         pass
